@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-mrz-scanner",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -39,48 +39,46 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angular-mrz-scanner:build"
+          },
           "configurations": {
             "production": {
               "browserTarget": "angular-mrz-scanner:build:production"
-            },
-            "development": {
-              "browserTarget": "angular-mrz-scanner:build:development"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -97,59 +95,41 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/dynamsoft-label-recognizer/dist",
-                "output": "assets/dynamsoft-label-recognizer"
-              },
-	            {
-                "glob": "**/*",
-                "input": "./node_modules/dynamsoft-camera-enhancer/dist",
-                "output": "assets/dynamsoft-camera-enhancer"
-              }
+              "src/assets"
             ],
             "styles": [
               "src/styles.css"
             ],
             "scripts": []
           }
-        }
-      }
-    },
-    "ngx-mrz-sdk": {
-      "projectType": "library",
-      "root": "projects/ngx-mrz-sdk",
-      "sourceRoot": "projects/ngx-mrz-sdk/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "project": "projects/ngx-mrz-sdk/ng-package.json"
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "angular-mrz-scanner:serve"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-mrz-sdk/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/ngx-mrz-sdk/tsconfig.lib.json"
+              "devServerTarget": "angular-mrz-scanner:serve:production"
             }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngx-mrz-sdk/src/test.ts",
-            "tsConfig": "projects/ngx-mrz-sdk/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-mrz-sdk/karma.conf.js"
           }
         }
       }
     }
   },
-  "cli": {
-    "analytics": false
-  }
+  "defaultProject": "angular-mrz-scanner"
 }

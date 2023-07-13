@@ -7,7 +7,7 @@ import { MrzReaderComponent } from './mrz-reader/mrz-reader.component';
 import { MrzScannerComponent } from './mrz-scanner/mrz-scanner.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
-import { NgxMrzSdkModule } from 'ngx-mrz-sdk';
+import { NgxMrzSdkModule } from './ngx-mrz-sdk/public-api';
 
 @NgModule({
   declarations: [

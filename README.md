@@ -37,13 +37,16 @@ typescript                      4.6.4
     ```bash
     npm install
     ```
-2. The `ngx-mrz-sdk` is located in `projects/ngx-mrz-sdk`. Add the `--watch` flag to run incremental build as a background process:
+
+
+
+2. <del>The `ngx-mrz-sdk` is located in `projects/ngx-mrz-sdk`. Add the `--watch` flag to run incremental build as a background process:</del>
 
     ```bash
-    cd projects/ngx-mrz-sdk
-    npm install
-    cd ../../
-    ng build ngx-mrz-sdk --watch
+    #cd projects/ngx-mrz-sdk
+    #npm install
+    #cd ../../
+    #ng build ngx-mrz-sdk --watch
     ```
 
 3. Apply for a [30-day free trial license](https://www.dynamsoft.com/customer/license/trialLicense?product=dlr) and update the license key in `app.module.ts` file:
@@ -55,7 +58,7 @@ typescript                      4.6.4
       dlrResourcePath: "assets/dynamsoft-label-recognizer"}),
     ```
 
-4 `HTTPS` is required for web camera access. Run the Angular application as follows:
+4. `HTTPS` is required for web camera access. Run the Angular application as follows:
     
     ```bash
     ng serve --ssl

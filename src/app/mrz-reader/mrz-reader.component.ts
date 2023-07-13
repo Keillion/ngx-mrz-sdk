@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxMrzSdkService } from 'ngx-mrz-sdk';
+import { NgxMrzSdkService } from '../ngx-mrz-sdk/public-api';
 
 @Component({
   selector: 'app-mrz-reader',
