@@ -66,12 +66,12 @@ typescript                      4.6.4
 
   ![Angular MRZ scanner](https://www.dynamsoft.com/codepool/img/2022/08/angular-mrz-scanner.png)
 
-## Publish the Angular Library Project
+## <del>Publish the Angular Library Project</del>
 
 ```bash
-ng build ngx-mrz-sdk
-cd dist/ngx-mrz-sdk
-npm publish
+#ng build ngx-mrz-sdk
+#cd dist/ngx-mrz-sdk
+#npm publish
 ```
 
 
