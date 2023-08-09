@@ -30,7 +30,7 @@ export class NgxMrzReaderComponent implements OnInit {
         this.isLoaded = true;
       };
       this.reader = await LabelRecognizer.createInstance();
-      
+      await this.reader!.updateRuntimeSettingsFromString("MRZ");
     })();
   }
 
@@ -50,10 +50,10 @@ export class NgxMrzReaderComponent implements OnInit {
             img.onload = (event: any) => {
               this.overlayManager.updateOverlay(img.width, img.height);
               if (this.reader) {
-                // We will try 3 angles. Normal direction, turn left 90 degrees, turn right 90 degrees, turn 180 degrees.
+                // We will try 4 angles. Normal direction, turn left 90 degrees, turn right 90 degrees, turn 180 degrees.
                 (async()=>{
                   try{
-                    // Normal direction
+                    // Reset to normal direction
                     await this.reader!.updateRuntimeSettingsFromString("MRZ");
                     let results = await this.reader!.recognize(file);
                     let runtimeSettings;
