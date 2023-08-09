@@ -31,7 +31,6 @@ export class NgxMrzReaderComponent implements OnInit {
       };
       this.reader = await LabelRecognizer.createInstance();
       await this.reader.updateRuntimeSettingsFromString("MRZ");
-      
     })();
   }
 
@@ -51,9 +50,33 @@ export class NgxMrzReaderComponent implements OnInit {
             img.onload = (event: any) => {
               this.overlayManager.updateOverlay(img.width, img.height);
               if (this.reader) {
-                this.reader.recognize(file).then((results: any) => {
-                  let txts: any = [];
-                  try {
+                // We will try 3 angles. Normal direction, turn left 90 degrees, turn right 90 degrees.
+                (async()=>{
+                  try{
+                    // Normal direction
+                    let results = await this.reader!.recognize(file);
+                    let runtimeSettings;
+                    if(!results.length){
+                      // Turn left 90 degrees
+                      runtimeSettings = JSON.parse(await this.reader!.outputRuntimeSettingsToString());
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FirstPoint = [0,100];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.SecondPoint = [0,0];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.ThirdPoint = [100,0];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [100,100];
+                      await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
+                      results = await this.reader!.recognize(file);
+                    }
+                    if(!results.length){
+                      // Turn right 90 degrees
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FirstPoint = [100,0];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.SecondPoint = [100,100];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.ThirdPoint = [0,100];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [0,0];
+                      await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
+                      results = await this.reader!.recognize(file);
+                    }
+                    // handle final results
+                    let txts: any = [];
                     if (results.length > 0) {
                       for (let result of results) {
                         for (let line of result.lineResults) {
@@ -73,10 +96,10 @@ export class NgxMrzReaderComponent implements OnInit {
                     } else {
                       this.result.emit(txts.join(''));
                     }
-                  } catch (e) {
+                  }catch(e){
                     alert(e);
                   }
-                });
+                })();
               }
             };
             img.src = event.target.result;
