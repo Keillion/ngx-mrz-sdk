@@ -50,15 +50,16 @@ export class NgxMrzReaderComponent implements OnInit {
             img.onload = (event: any) => {
               this.overlayManager.updateOverlay(img.width, img.height);
               if (this.reader) {
-                // We will try 3 angles. Normal direction, turn left 90 degrees, turn right 90 degrees.
+                // We will try 3 angles. Normal direction, turn left 90 degrees, turn right 90 degrees, turn 180 degrees.
                 (async()=>{
                   try{
                     // Normal direction
+                    await this.reader!.updateRuntimeSettingsFromString("MRZ");
                     let results = await this.reader!.recognize(file);
                     let runtimeSettings;
                     if(!results.length){
-                      // Turn left 90 degrees
                       runtimeSettings = JSON.parse(await this.reader!.outputRuntimeSettingsToString());
+                      // Turn left 90 degrees
                       runtimeSettings.ReferenceRegionArray[0].Localization.FirstPoint = [0,100];
                       runtimeSettings.ReferenceRegionArray[0].Localization.SecondPoint = [0,0];
                       runtimeSettings.ReferenceRegionArray[0].Localization.ThirdPoint = [100,0];
@@ -75,6 +76,15 @@ export class NgxMrzReaderComponent implements OnInit {
                       await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
                       results = await this.reader!.recognize(file);
                     }
+                    if(!results.length){
+                      // Turn 180 degrees
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FirstPoint = [100,100];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.SecondPoint = [0,100];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.ThirdPoint = [0,0];
+                      runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [100,0];
+                      await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
+                      results = await this.reader!.recognize(file);
+                    }
                     // handle final results
                     let txts: any = [];
                     if (results.length > 0) {
@@ -87,10 +97,10 @@ export class NgxMrzReaderComponent implements OnInit {
                       
                       let parsedResults = "";
                       if (txts.length == 2) {
-                        parsedResults = MrzParser.parseTwoLines(txts[0], txts[1]);
+                        parsedResults = MrzParser.parseTwoLines(txts[0], txts[1]) || MrzParser.parseTwoLines(txts[1], txts[0]);
                       }
                       else if (txts.length == 3) {
-                        parsedResults = MrzParser.parseThreeLines(txts[0], txts[1], txts[2]);
+                        parsedResults = MrzParser.parseThreeLines(txts[0], txts[1], txts[2]) || MrzParser.parseThreeLines(txts[2], txts[1], txts[0]);
                       }
                       this.result.emit([txts.join('\n'), parsedResults]);
                     } else {
