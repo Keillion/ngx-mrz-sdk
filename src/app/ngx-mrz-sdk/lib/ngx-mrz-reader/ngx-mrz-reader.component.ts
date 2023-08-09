@@ -54,9 +54,8 @@ export class NgxMrzReaderComponent implements OnInit {
                 (async()=>{
                   try{
                     // Normal direction
-                    await this.reader.updateRuntimeSettingsFromString("MRZ");
+                    await this.reader!.updateRuntimeSettingsFromString("MRZ");
                     let results = await this.reader!.recognize(file);
-                    console.log('0th')
                     let runtimeSettings;
                     if(!results.length){
                       runtimeSettings = JSON.parse(await this.reader!.outputRuntimeSettingsToString());
@@ -67,7 +66,6 @@ export class NgxMrzReaderComponent implements OnInit {
                       runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [100,100];
                       await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
                       results = await this.reader!.recognize(file);
-                      console.log('1st')
                     }
                     if(!results.length){
                       // Turn right 90 degrees
@@ -77,7 +75,6 @@ export class NgxMrzReaderComponent implements OnInit {
                       runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [0,0];
                       await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
                       results = await this.reader!.recognize(file);
-                      console.log('2rd')
                     }
                     if(!results.length){
                       // Turn 180 degrees
@@ -87,7 +84,6 @@ export class NgxMrzReaderComponent implements OnInit {
                       runtimeSettings.ReferenceRegionArray[0].Localization.FourthPoint = [100,0];
                       await this.reader!.updateRuntimeSettingsFromString(JSON.stringify(runtimeSettings));
                       results = await this.reader!.recognize(file);
-                      console.log('3rd')
                     }
                     // handle final results
                     let txts: any = [];
@@ -107,7 +103,6 @@ export class NgxMrzReaderComponent implements OnInit {
                         parsedResults = MrzParser.parseThreeLines(txts[0], txts[1], txts[2]) || MrzParser.parseThreeLines(txts[2], txts[1], txts[0]);
                       }
                       this.result.emit([txts.join('\n'), parsedResults]);
-                      console.log(JSON.stringify(txts));
                     } else {
                       this.result.emit(txts.join(''));
                     }
