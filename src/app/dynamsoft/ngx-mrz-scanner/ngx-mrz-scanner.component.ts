@@ -138,6 +138,7 @@ export class NgxMrzScannerComponent implements OnInit {
   }
 
   listCameras(deviceInfos: any): void {
+    
     for (var i = 0; i < deviceInfos.length; ++i) {
       var deviceInfo = deviceInfos[i];
       var option = document.createElement('option');
@@ -145,6 +146,18 @@ export class NgxMrzScannerComponent implements OnInit {
       option.text = deviceInfo.label;
       this.cameraInfo[deviceInfo.deviceId] = deviceInfo;
       if (this.videoSelect) this.videoSelect.appendChild(option);
+    }
+  }
+  saveFrame(): void {
+    if (this.cameraEnhancer){
+    let frameData = this.cameraEnhancer.getFrameFromBuffer();
+    let canvas = frameData.toCanvas();
+    // document.body.appendChild(canvas);
+
+    let link = document.createElement('a');
+    link.download = 'frame.png';
+    link.href = canvas.toDataURL();
+    link.click();
     }
   }
 }
