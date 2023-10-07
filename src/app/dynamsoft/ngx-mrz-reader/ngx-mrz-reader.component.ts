@@ -65,7 +65,8 @@ export class NgxMrzReaderComponent implements OnInit {
                       let txts: any = [];
                       for (let result of results) {
                         for (let line of result.lineResults) {
-                            txts.push(line.text);
+                          if(false === line.isCheckDigitMatched){ return false; }
+                          txts.push(line.text);
                         }
                       }
                       if(2 !== txts.length && 3 !== txts.length){ return false; }
